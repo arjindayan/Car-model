@@ -79,3 +79,9 @@ Model eğitimi sonunda:
 ## Lisans
 
 MIT
+
+## Model Dosyası
+
+Model dosyası (.pth) boyut sınırlaması nedeniyle GitHub'da bulunmamaktadır. Şu kaynaklardan edinebilirsiniz:
+- Google Drive: https://drive.google.com/file/d/1LxJm_0cA3GTSMP5oZv8gCKT1NOZ6AVAK/view?usp=drive_link
+- veya kendi modelinizi eğitebilirsiniz
