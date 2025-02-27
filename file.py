@@ -26,11 +26,11 @@ device="cuda" if torch.cuda.is_available() else "cpu"
 train_transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(p=0.5),
-    transforms.RandomRotation(degrees=15),  # Rastgele döndürme
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Renk değişimleri
-    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # Rastgele kaydırma
+    transforms.RandomRotation(degrees=15),  
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  
     transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406],  # ImageNet ortalaması
+    transforms.Normalize([0.485, 0.456, 0.406],  
                          [0.229, 0.224, 0.225])
 ])
 
@@ -120,13 +120,13 @@ class model(nn.Module):
         
         self.block1 = nn.Sequential(
             nn.Conv2d(in_channels=in_shape, out_channels=hidden_shape, kernel_size=3, padding=1, stride=1),
-            nn.BatchNorm2d(hidden_shape),  # Batch Normalization eklendi
+            nn.BatchNorm2d(hidden_shape),  
             nn.ReLU(),
             nn.Conv2d(in_channels=hidden_shape, out_channels=hidden_shape*2, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(hidden_shape*2),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout(0.25)  # Dropout eklendi
+            nn.Dropout(0.25)  
         )
         
         self.block2 = nn.Sequential(
@@ -140,7 +140,7 @@ class model(nn.Module):
             nn.Dropout(0.25)
         )
         
-        self.block3 = nn.Sequential(  # Yeni blok eklendi
+        self.block3 = nn.Sequential(
             nn.Conv2d(in_channels=hidden_shape*4, out_channels=hidden_shape*4, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(hidden_shape*4),
             nn.ReLU(),
@@ -155,7 +155,7 @@ class model(nn.Module):
             nn.Flatten(),
             nn.Linear(in_features=hidden_shape*8*28*28, out_features=512),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(0.4),
             nn.Linear(in_features=512, out_features=out_shape)
         )
         
@@ -166,7 +166,6 @@ class model(nn.Module):
         x = self.classifier(x)
         return x
 
-# EarlyStopping sınıfını kodun başına taşı (import'lardan sonra)
 class EarlyStopping:
     def __init__(self, patience=7, min_delta=0, path='best_model.pth'):
         self.patience = patience
@@ -192,7 +191,7 @@ class EarlyStopping:
     def save_checkpoint(self, model):
         torch.save(model.state_dict(), self.path)
 
-# Modeli device'a taşı ve önceki ağırlıkları yükle
+
 sample_model = model(in_shape=3, hidden_shape=32, out_shape=3).to(device)
 sample_model.load_state_dict(torch.load('best_model.pth'))
 
@@ -211,20 +210,20 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     verbose=True
 )
 
-# Hiperparametreler
+
 EPOCHS = 70
 PATIENCE = 7
 
-# Early stopping - aynı dosyaya kaydetmek için
+
 early_stopping = EarlyStopping(patience=PATIENCE, path='best_model.pth')
 
-# Eğitim geçmişi için listeler
+
 train_losses = []
 test_losses = []
 train_accs = []
 test_accs = []
 
-# Tek bir eğitim döngüsü
+
 for epoch in range(EPOCHS):
     print(f"\nEpoch: {epoch+1}/{EPOCHS}")
     print("-" * 30)
@@ -272,7 +271,7 @@ def plot_training_history(train_losses, test_losses, train_accs, test_accs):
     plt.ylabel('Loss')
     plt.legend()
     
-    # Accuracy grafiği
+    
     plt.subplot(1, 2, 2)
     plt.plot(train_accs, label='Train Accuracy')
     plt.plot(test_accs, label='Test Accuracy')
@@ -284,7 +283,7 @@ def plot_training_history(train_losses, test_losses, train_accs, test_accs):
     plt.tight_layout()
     plt.show()
 
-# Eğitim sonrası görselleştirme
+
 plot_training_history(train_losses, test_losses, train_accs, test_accs)
 
 
